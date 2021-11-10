@@ -54,21 +54,3 @@ class WM_activity_regularizer(Regularizer):
 
                 # regularized_loss += self.gamma1 * K.sum(K.binary_crossentropy(K.exp(10 * K.sin(10 * z)) / (1 + K.exp(10 * K.sin(10 * z))), K.cast_to_floatx(self.b)))
         return K.in_train_phase(regularized_loss, loss)
-
-
-def subsample_training_data(x_train, y_train_vec, target_class, num_classes=10):
-    y_train = kutils.to_categorical(y_train_vec, num_classes)
-    sample_idx_target_class = np.argwhere((y_train_vec == target_class) * 1) # 找出满足条件元素的位置，也就是和目标类相同的提取出来
-    sample_idx_target_class = sample_idx_target_class[:, 0:1]
-    samples_target_class = x_train[sample_idx_target_class, :]
-    labels_target_class = y_train[sample_idx_target_class, :]
-    subsample_len = int(np.floor(0.8 * sample_idx_target_class.shape[0]))
-    subset_idx = np.random.randint(sample_idx_target_class.shape[0], size=subsample_len)
-    x_train_subset = samples_target_class[subset_idx, :]
-    x_train_subset = np.squeeze(x_train_subset)
-    y_train_vec_target_class = y_train_vec[sample_idx_target_class]
-    y_train_vec_subset = y_train_vec_target_class[subset_idx]
-    y_train_subset = labels_target_class[subset_idx, :]
-    y_train_subset = np.squeeze(y_train_subset)
-    return (
-     x_train_subset, y_train_subset)
