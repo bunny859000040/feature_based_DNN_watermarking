@@ -1,8 +1,5 @@
 from regularizer import subsample_training_data
 from regularizer import WM_activity_regularizer
-from DeepSigns import get_activations
-from DeepSigns import extract_WM_from_activations
-from DeepSigns import compute_BER
 import os
 import numpy as np
 import pickle
@@ -98,28 +95,7 @@ if __name__ == '__main__':
 
 
     ## WM configs ---- ##
-    """
-    image from different dataset
-    0.0001 0 bits error and 0.4 false positive
-    0.00005 0 bits error and 0.18 false positive
-    0.00003 0 bits error and 0.048 false positive almost 5 percent and 20 bits average diff bits
-    0.00002 0 bits error and 0.005 false positive almost 0.5 percent and 29 bits average diff bits (4x4x16)
-    0.0000185 0 bits error and 32 bits on average different and percent of false positive only 97 image had same water mark
-    
-    0.0000175 0 bits error and 35 bits on average different and percent of false positive only 21 image had same water mark
-    0.0000174 3 bits error
-    0.0000173 1 bits error 
-    0.0000171875 2 bits error
-    0.000016875 1 bit error
-    
-    0.00001625 4 bits error
-    0.000015  6 bits error for 2 epochs 0 bits error and 20% false positive because we trained for 10 epochs
-    0.0000125 11 bits    
-    0.00001 22 bits
-    
-    image from the same dataset dataset
-    0.000025 (for spread over all filters) we get 0 bit error but high false positive
-    """
+
     scale = 0.00025
     gamma2 = 0.00001625  # for loss2
     embed_bits = 128
@@ -134,7 +110,6 @@ if __name__ == '__main__':
     b_path = 'result/WRN_entangled_the_watermark_{}images_{}bits_from_scratch.npy'.format(image_num, embed_bits)
     np.save(b_path, b)
 
-    # aux_ip = Input(shape=[None], name='aux_input')
     WM_reg = WM_activity_regularizer(gamma1=scale, b=b, image_num=image_num)
     init_shape = (3, 32+image_num, 32) if K.image_dim_ordering() == 'th' else (32+image_num, 32, 3)
 
@@ -208,25 +183,6 @@ if __name__ == '__main__':
         BER = np.sum(diff) / embed_bits
         print("BER = ", BER)
 
-    #### validation for the second image #####
-    """
-    feature_maps = WM_model.predict(np.expand_dims(trainX[1], axis=0))
-    feature_map = feature_maps[0, 0:4, 0:4, 0]
-    featuremap_all = np.reshape(feature_map, (1, feature_map.size))
-    for j in range(1, 16):
-        feature_map = feature_maps[0, 0:4, 0:4, j]
-        feature_map = np.reshape(feature_map, (1, feature_map.size))
-        featuremap_all = np.concatenate((featuremap_all, feature_map), 1)
-
-    X = np.load('result/projection_matrix_1.npy')
-    extract_bits = np.dot(featuremap_all, X)
-    extract_bits = 1 / (1 + np.exp(-extract_bits))
-    extract_bits[extract_bits >= 0.5] = 1
-    extract_bits[extract_bits < 0.5] = 0
-    diff = np.abs(extract_bits - b2)
-    print("error bits num = ", np.sum(diff))
-    BER = np.sum(diff) / embed_bits
-    print("BER = ", BER)"""
 
 
 
