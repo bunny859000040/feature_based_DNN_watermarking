@@ -1,4 +1,3 @@
-from regularizer import subsample_training_data
 from regularizer import WM_activity_regularizer
 import os
 import numpy as np
