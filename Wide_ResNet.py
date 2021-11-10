@@ -5,8 +5,6 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D, AveragePooli
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
-from DeepSigns import WM_activity_regularizer
-from regularizer import subsample_training_data
 from keras.datasets import cifar10
 import keras.utils.np_utils as kutils
 import tensorflow as tf
@@ -190,7 +188,7 @@ def create_wide_residual_network(input_dim, nb_classes=100, N=2, k=1, dropout=0.
     model = Model(ip, x)
 
     sgd = SGD(lr=0.1, momentum=0.9, nesterov=True)
-    """def custom_loss(key):
+    def custom_loss(key):
         def loss(x_real, x_pred):
             reverse_key = tf.where(tf.equal(key[:, 0], 0), x_real, tf.zeros_like(x_real))
             pred = tf.where(tf.equal(key[:, 0], 0), x_pred, tf.zeros_like(x_pred))
@@ -204,7 +202,7 @@ def create_wide_residual_network(input_dim, nb_classes=100, N=2, k=1, dropout=0.
     """
     def loss1 (y_true, y_pred):
         return K.categorical_crossentropy(y_pred, y_true)
-    model.compile(loss=loss1, optimizer=sgd, metrics=["acc"])
+    model.compile(loss=loss1, optimizer=sgd, metrics=["acc"])"""
 
     if verbose: print("Wide Residual Network-%d-%d created." % (nb_conv, k))
     return model
